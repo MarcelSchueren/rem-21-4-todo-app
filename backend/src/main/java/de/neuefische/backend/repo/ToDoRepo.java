@@ -5,6 +5,7 @@ import de.neuefische.backend.model.Task;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -13,7 +14,7 @@ import java.util.UUID;
 @Repository
 public class ToDoRepo {
 
-    private List<Task> tasks = new ArrayList<>();
+    private final List<Task> tasks = new ArrayList<>();
 
     public List<Task> showAllTasks() {
         return this.tasks;
@@ -21,13 +22,13 @@ public class ToDoRepo {
 
     public ResponseEntity<Object> add(ApiTask apiTask) {
         String id = generateUUID();
+        URI location = URI.create("api/todo/" + id);
         if (apiTask.getDescription().equals("")) {
             return ResponseEntity.badRequest().body(null);
-            //    throw new IllegalArgumentException("Gib einen Namen ein du Depp :)");
         } else {
             Task task = new Task(id, apiTask.getDescription(), apiTask.getStatus());
             tasks.add(task);
-            return ResponseEntity.accepted().body(apiTask);
+            return ResponseEntity.created(location).body(apiTask);
         }
     }
 
@@ -53,9 +54,16 @@ public class ToDoRepo {
         }
     }
 
-    public void deleteTask(String id) {
-        tasks.removeIf(task -> task.getId().equals(id));
+    public ResponseEntity<Object> deleteTask(String id) {
+        Task taskToDelete;
+        for (Task task : tasks) {
+            if (task.getId().equals(id)) {
+                taskToDelete = task;
+                tasks.remove(task);
+                return ResponseEntity.accepted().body(taskToDelete);
+            }
+        }
+        return ResponseEntity.badRequest().body(null);
     }
 }
-
 

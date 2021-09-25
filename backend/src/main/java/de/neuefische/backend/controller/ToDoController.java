@@ -1,12 +1,11 @@
 package de.neuefische.backend.controller;
+
 import de.neuefische.backend.model.ApiTask;
 import de.neuefische.backend.model.Task;
 import de.neuefische.backend.service.ToDoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Optional;
@@ -33,27 +32,25 @@ public class ToDoController {
     }
 
     @DeleteMapping(path = "{id}")
-    public void deleteTask(@PathVariable String id){
-        toDoService.deleteTask(id);
+    public ResponseEntity<Object> deleteTask(@PathVariable String id) {
+        return toDoService.deleteTask(id);
     }
 
     @GetMapping("{id}")
-    public Task findID(@PathVariable String id) {
+    public ResponseEntity<Object> findID(@PathVariable String id) {
         Optional<Task> response = toDoService.findId(id);
         if (response.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "taskmitid" + id + "nicht gefunden");
-        }
-        return response.get();
+            return ResponseEntity.badRequest().body(null);
+        } else return ResponseEntity.accepted().body(response.get());
     }
 
     @PutMapping("{id}")
-    public void updateTask(@PathVariable String id){
+    public ResponseEntity<Object> updateTask(@PathVariable String id) {
         Optional<Task> response = toDoService.findId(id);
         if (response.isEmpty()) {
-            throw new ResponseStatusException(HttpStatus.NOT_FOUND, "taskmitid" + id + "nicht gefunden");
+            return ResponseEntity.badRequest().body(null);
         }
-       toDoService.changeStatus(response.get());
+        toDoService.changeStatus(response.get());
+        return ResponseEntity.accepted().body(null);
     }
-
-
 }

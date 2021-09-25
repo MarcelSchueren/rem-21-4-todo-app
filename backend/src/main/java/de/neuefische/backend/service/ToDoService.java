@@ -36,7 +36,7 @@ public class ToDoService {
     }
 
 
-    public void deleteTask(String id) {
-        toDoRepo.deleteTask(id);
+    public ResponseEntity<Object> deleteTask(String id) {
+        return toDoRepo.deleteTask(id);
     }
 }
