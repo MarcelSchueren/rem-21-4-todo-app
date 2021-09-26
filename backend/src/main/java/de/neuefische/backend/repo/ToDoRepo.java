@@ -63,5 +63,9 @@ public class ToDoRepo {
         }
         return Optional.empty();
     }
+
+    public void clearRepo() {
+        tasks.clear();
+    }
 }
 

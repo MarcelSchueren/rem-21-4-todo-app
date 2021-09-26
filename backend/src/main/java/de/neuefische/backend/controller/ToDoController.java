@@ -53,7 +53,7 @@ public class ToDoController {
         Optional<Task> response = toDoService.findId(id);
         if (response.isEmpty()) {
             return ResponseEntity.badRequest().body(null);
-        } else return ResponseEntity.accepted().body(response.get());
+        } else return ResponseEntity.ok().body(response.get());
     }
 
     @PutMapping("{id}")
