@@ -43,8 +43,10 @@ class ToDoControllerTest {
         ApiTask apiTask2 = new ApiTask("Task 2", "OPEN");
         Task task1 = toDoRepo.add(apiTask1);
         Task task2 = toDoRepo.add(apiTask2);
+
         //WHEN
         ResponseEntity<Task[]> response = restTemplate.getForEntity(url, Task[].class);
+
         //THEN
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         assertThat(response.getBody(), arrayContainingInAnyOrder(task1, task2));
@@ -52,8 +54,10 @@ class ToDoControllerTest {
 
     @Test
     void postTaskShouldReturnOneTask() {
+        //GIVEN
         String url = "http://localhost:" + port + "/api/todo";
         ApiTask apiTask1 = new ApiTask("Task 1", "OPEN");
+
         //WHEN
         ResponseEntity<Task> response = restTemplate.postForEntity(url, apiTask1 ,Task.class);
         //THEN
@@ -78,10 +82,12 @@ class ToDoControllerTest {
         Task task2 = toDoRepo.add(apiTask2);
         Task task3 = toDoRepo.add(apiTask3);
         String urlOfTaskToDelete = "http://localhost:" + port + "/api/todo/" + task2.getId();
+
         //WHEN
         restTemplate.delete(urlOfTaskToDelete);
         String url = "http://localhost:" + port + "/api/todo";
         ResponseEntity<Task[]> response = restTemplate.getForEntity(url, Task[].class);
+
         //THEN
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         assertThat(response.getBody(), arrayContainingInAnyOrder(task1, task3));
@@ -118,8 +124,10 @@ class ToDoControllerTest {
         Task task1 = toDoRepo.add(apiTask1);
         String idTask1 = task1.getId();
         String url = "http://localhost:" + port + "/api/todo/" + idTask1;
+
         //WHEN
         ResponseEntity<Task> response = restTemplate.getForEntity(url, Task.class);
+
         //THEN
         assertThat(response.getStatusCode(), is(HttpStatus.OK));
         assertEquals(response.getBody(), task1);
@@ -132,10 +140,11 @@ class ToDoControllerTest {
         Task task1 = toDoRepo.add(apiTask1);
         String falseTask1ID = "falseID";
         String url = "http://localhost:" + port + "/api/todo/" + falseTask1ID;
+
         //WHEN
         ResponseEntity<Task> response = restTemplate.getForEntity(url, Task.class);
+
         //THEN
         assertThat(response.getStatusCode(), is(HttpStatus.BAD_REQUEST));
     }
-
 }
