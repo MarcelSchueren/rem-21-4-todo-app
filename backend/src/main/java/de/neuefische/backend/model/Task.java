@@ -11,5 +11,6 @@ import lombok.NoArgsConstructor;
 public class Task {
     private String id;
     private String description;
-    private String status;          // OPEN, IN_PROGRESS, DONE
+    private TaskStatus status;          // OPEN, IN_PROGRESS, DONE
+
 }

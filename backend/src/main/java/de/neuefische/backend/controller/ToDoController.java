@@ -49,7 +49,7 @@ public class ToDoController {
     }
 
     @GetMapping("{id}")
-    public ResponseEntity<Object> findID(@PathVariable String id) {
+    public ResponseEntity<Task> findID(@PathVariable String id) {
         Optional<Task> response = toDoService.findId(id);
         if (response.isEmpty()) {
             return ResponseEntity.badRequest().body(null);
@@ -57,12 +57,12 @@ public class ToDoController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<Object> updateTask(@PathVariable String id) {
+    public ResponseEntity<Task> updateTask(@PathVariable String id) {
         Optional<Task> response = toDoService.findId(id);
         if (response.isEmpty()) {
             return ResponseEntity.badRequest().body(null);
         }
-        toDoService.changeStatus(response.get());
-        return ResponseEntity.accepted().body(null);
+        Task updatedTask = toDoService.changeStatus(response.get());
+        return ResponseEntity.accepted().body(updatedTask);
     }
 }

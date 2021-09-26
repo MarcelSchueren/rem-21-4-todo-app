@@ -2,6 +2,7 @@ package de.neuefische.backend.repo;
 
 import de.neuefische.backend.model.ApiTask;
 import de.neuefische.backend.model.Task;
+import de.neuefische.backend.model.TaskStatus;
 import org.springframework.stereotype.Repository;
 
 import java.util.ArrayList;
@@ -26,7 +27,7 @@ public class ToDoRepo {
 
     private Task mapFromApiTaskToTask(ApiTask apiTask) {
         String id = generateUUID();
-        return new Task(id, apiTask.getDescription(), apiTask.getStatus());
+        return new Task(id, apiTask.getDescription(), TaskStatus.OPEN);
     }
 
     public String generateUUID() {
@@ -42,12 +43,13 @@ public class ToDoRepo {
         return Optional.empty();
     }
 
-    public void changeStatus(Task task) {
-        if (task.getStatus().equals("OPEN")) {
-            task.setStatus("IN_PROGRESS");
-        } else if (task.getStatus().equals("IN_PROGRESS")) {
-            task.setStatus("DONE");
+    public Task changeStatus(Task task) {
+        if (task.getStatus().equals(TaskStatus.OPEN)) {
+            task.setStatus(TaskStatus.IN_PROGRESS);
+        } else if (task.getStatus().equals(TaskStatus.IN_PROGRESS)) {
+            task.setStatus(TaskStatus.DONE);
         }
+        return task;
     }
 
     public Optional<Task> deleteTask(String id) {

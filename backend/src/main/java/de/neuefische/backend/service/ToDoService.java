@@ -26,14 +26,13 @@ public class ToDoService {
         return toDoRepo.add(apiTask);
     }
 
-  public Optional<Task> findId(String id) {
+    public Optional<Task> findId(String id) {
         return toDoRepo.findId(id);
-  }
-
-    public void changeStatus(Task task) {
-        toDoRepo.changeStatus(task);
     }
 
+    public Task changeStatus(Task task) {
+        return toDoRepo.changeStatus(task);
+    }
 
     public Optional<Task> deleteTask(String id) {
         return toDoRepo.deleteTask(id);
