@@ -2,10 +2,8 @@ package de.neuefische.backend.repo;
 
 import de.neuefische.backend.model.ApiTask;
 import de.neuefische.backend.model.Task;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -20,16 +18,15 @@ public class ToDoRepo {
         return this.tasks;
     }
 
-    public ResponseEntity<Object> add(ApiTask apiTask) {
+    public Task add(ApiTask apiTask) {
+        Task task = mapFromApiTaskToTask(apiTask);
+        tasks.add(task);
+        return task;
+    }
+
+    private Task mapFromApiTaskToTask(ApiTask apiTask) {
         String id = generateUUID();
-        URI location = URI.create("api/todo/" + id);
-        if (apiTask.getDescription().equals("")) {
-            return ResponseEntity.badRequest().body(null);
-        } else {
-            Task task = new Task(id, apiTask.getDescription(), apiTask.getStatus());
-            tasks.add(task);
-            return ResponseEntity.created(location).body(apiTask);
-        }
+        return new Task(id, apiTask.getDescription(), apiTask.getStatus());
     }
 
     public String generateUUID() {
@@ -37,7 +34,6 @@ public class ToDoRepo {
     }
 
     public Optional<Task> findId(String id) {
-
         for (Task task : tasks) {
             if (task.getId().equals(id)) {
                 return Optional.of(task);
@@ -54,16 +50,16 @@ public class ToDoRepo {
         }
     }
 
-    public ResponseEntity<Object> deleteTask(String id) {
+    public Optional<Task> deleteTask(String id) {
         Task taskToDelete;
         for (Task task : tasks) {
             if (task.getId().equals(id)) {
                 taskToDelete = task;
                 tasks.remove(task);
-                return ResponseEntity.accepted().body(taskToDelete);
+                return Optional.of(taskToDelete);
             }
         }
-        return ResponseEntity.badRequest().body(null);
+        return Optional.empty();
     }
 }
 

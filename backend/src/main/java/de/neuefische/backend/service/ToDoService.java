@@ -4,7 +4,6 @@ import de.neuefische.backend.model.ApiTask;
 import de.neuefische.backend.model.Task;
 import de.neuefische.backend.repo.ToDoRepo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,7 +22,7 @@ public class ToDoService {
         return toDoRepo.showAllTasks();
     }
 
-    public ResponseEntity<Object> add(ApiTask apiTask) {
+    public Task add(ApiTask apiTask) {
         return toDoRepo.add(apiTask);
     }
 
@@ -36,7 +35,7 @@ public class ToDoService {
     }
 
 
-    public ResponseEntity<Object> deleteTask(String id) {
+    public Optional<Task> deleteTask(String id) {
         return toDoRepo.deleteTask(id);
     }
 }

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,18 +23,29 @@ public class ToDoController {
     }
 
     @GetMapping
-    public List<Task> listTasks() {
-        return toDoService.showAllList();
+    public ResponseEntity<List<Task>> listTasks() {
+        return ResponseEntity.ok().body(toDoService.showAllList());
     }
 
     @PostMapping
-    public ResponseEntity<Object> postTask(@RequestBody ApiTask apiTask) {
-        return toDoService.add(apiTask);
+    public ResponseEntity<Task> postTask(@RequestBody ApiTask apiTask) {
+        if (apiTask.getDescription().equals("")) {
+            return ResponseEntity.badRequest().build();
+        } else {
+            Task taskToAdd = toDoService.add(apiTask);
+            URI location = URI.create("api/todo/" + taskToAdd.getId());
+            return ResponseEntity.created(location).body(taskToAdd);
+        }
     }
 
     @DeleteMapping(path = "{id}")
-    public ResponseEntity<Object> deleteTask(@PathVariable String id) {
-        return toDoService.deleteTask(id);
+    public ResponseEntity<Task> deleteTask(@PathVariable String id) {
+        Optional<Task> taskToDelete = toDoService.deleteTask(id);
+        if (taskToDelete.isPresent()) {
+            return ResponseEntity.accepted().body(taskToDelete.get());
+        } else {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     @GetMapping("{id}")
